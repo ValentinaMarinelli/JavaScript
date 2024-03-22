@@ -8,20 +8,22 @@
 
 </head>
 <body>
-   
+    <h1>Client per API Spotify V3</h1>
+    <h3>Canzoni riprodotte di recente</h3>
         <table class="table" border="1" id="songTableRow">
             <tr>
                 <th>Artista</th>
                 <th>Titolo</th>
                 <th>Copertina</th>
                 <th>Ascolta</th>
+                <th>Visualizza album</th>
             </tr>
         </table>
 
     <div id="spotifyPlayer"></div>
 
     <script type="text/javascript">
-        var access_token = "BQAWbXY_Ag7TbBuVoqF0jGdX18m5kYByEZVjvHfox1jNBP-o9eaSyyV8a505HKVL6-Y4BDic8lxk4utrLypEicQ9LspGHROESHihsegF9JIUOwSNtULUpSrEbn6RHVuMgZJmjVqFSKYtRjFulyOIbo_KPy1cpoPfJlzKKi4W5eA6ByL1wj0W9h8Iu2JzgJNzzN_bXWsvmXa_ctPuM4qbTrnt";
+        var access_token = "BQA1e-b911lHiw-ixhF5N4Quw5V4CpCsdTTyUMOFwV7_P1bkNydBRAxiddkAy11N-rkKK6Z188CBTQPwbtceDdprqbR8A4NOeoQiuoZ0JrXgQvzWl9oO10jwheWezVDTstx5mYtzbmn_EyVKj1Aus4zWRlWKXK-0v33NKhbXFF9bktANsdW4D4PhodCI7hwvCVrjWpt_tVrb2JOcU08Oq6e1";
        
         async function ultimiAscolti() {
             try {
@@ -50,15 +52,22 @@
                 let tbody = "";
                 recentSongs.forEach(song => {
                     const nomeArtista = song.track.artists[0].name;
+                    const linkArtista = song.track.artists[0].external_urls.spotify;
                     const nomeCanzone = song.track.name;
+                    const linkCanzone = song.track.external_urls.spotify;
                     const immagineAlbum = song.track.album.images[0].url;
+                    const linkAlbum = song.track.album.external_urls.spotify;
+                    const nomeAlbum = song.track.album.name;
                     const idCanzone = song.track.id;
 
+                    console.log(song.track.external_urls.spotify)
+
                     tbody += "<tr>";
-                    tbody += `<td>${nomeArtista}</td>`;
+                    tbody += `<td><a href='${linkArtista}'>${nomeArtista}</a></td>`;
                     tbody += `<td>${nomeCanzone}</td>`;
                     tbody += `<td><img src="${immagineAlbum}" alt="Copertina Album" width="50"></td>`;
-                    tbody += `<td><button class="btn btn-dark" onclick="playSong('${idCanzone}', '${nomeCanzone}')">Play</button></td>`;
+                    tbody += `<td><a href='${linkCanzone}'>Play</a></td>`;
+                    tbody += `<td><a href='${linkAlbum}'>${nomeAlbum}</a></td>`;
                     tbody += "</tr>";
                 });
 
