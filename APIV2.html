@@ -21,7 +21,7 @@
     <div id="spotifyPlayer"></div>
 
     <script type="text/javascript">
-        var access_token = "BQADltdcuHUFGCHxkBD0Vs_31yI76qlVZQVDEHXoazlOBCCh8VWA4yV6mWh1hgPWAL44oGQoEACY-aMjs3xi7Z0B8NFgW60jB11yS_vGvWDZaK2JkzOqm-fOI0l2Zwa44ouOOPiSTfkn3jOLJC1VcQ-iiLd7ta8MgHuSLgHNELxtjJP4PqIWMhFkMFPuj0F41-96DDgquI76tRy8dboy8UoP";
+        var access_token = "BQA1e-b911lHiw-ixhF5N4Quw5V4CpCsdTTyUMOFwV7_P1bkNydBRAxiddkAy11N-rkKK6Z188CBTQPwbtceDdprqbR8A4NOeoQiuoZ0JrXgQvzWl9oO10jwheWezVDTstx5mYtzbmn_EyVKj1Aus4zWRlWKXK-0v33NKhbXFF9bktANsdW4D4PhodCI7hwvCVrjWpt_tVrb2JOcU08Oq6e1";
        
         async function ultimiAscolti() {
             try {
@@ -51,6 +51,7 @@
                 recentSongs.forEach(song => {
                     const nomeArtista = song.track.artists[0].name;
                     const nomeCanzone = song.track.name;
+                    const linkCanzone = song.track.external_urls.spotify;
                     const immagineAlbum = song.track.album.images[0].url;
                     const idCanzone = song.track.id;
 
@@ -58,7 +59,7 @@
                     tbody += `<td>${nomeArtista}</td>`;
                     tbody += `<td>${nomeCanzone}</td>`;
                     tbody += `<td><img src="${immagineAlbum}" alt="Copertina Album" width="50"></td>`;
-                    tbody += `<td><button class="btn btn-dark" onclick="playSong('${idCanzone}', '${nomeCanzone}')">Play</button></td>`;
+                    tbody += `<td><a href='${linkCanzone}'>Play</a></td>`;
                     tbody += "</tr>";
                 });
 
