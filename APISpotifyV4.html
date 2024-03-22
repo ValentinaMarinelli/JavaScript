@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Javascript API V4</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+</head>
+<body>
+    <h1>Client per API Spotify V4</h1>
+    <h3>Canzoni riprodotte di recente</h3>
+        <table class="table" border="1" id="songTableRow">
+            <tr>
+                <th>Artista</th>
+                <th>Titolo</th>
+                <th>Copertina</th>
+                <th>Ascolta</th>
+                <th>Visualizza album</th>
+            </tr>
+        </table>
+
+    <div id="spotifyPlayer"></div>
+
+    <script type="text/javascript">
+        var access_token = "BQAH5OXGimbPHhR9hW0kWkQAxe_BNXD2wYx1L7znU_BvkaMX6kZGZg5zmYB72bKRHAWsepbrdS6sog1gpgvX_T7cU2Z37XudDmY64LP09yUbKcuWOPnvyn_H1bH_N1-2PownKXPiGO-97KMWOGTgYuVgdxsoQPvlJ5NhK3l__PFSn1covRGr7xrV-2JIDo8APyGZlWWzHsCgCYCrBhCd4WqG";
+       
+        async function ultimiAscolti() {
+            try {
+                const response = await fetch('https://api.spotify.com/v1/me/player/recently-played', {
+                    headers: {
+                        'Authorization': `Bearer ${access_token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Errore nella richiesta: ${response.status}`);
+                }
+
+                const jsonData = await response.json();
+                return jsonData.items;
+            } catch (error) {
+                console.error('Errore durante la richiesta:', error);
+                return [];
+            }
+        }
+
+        async function renderTable() {
+            try {
+                const recentSongs = await ultimiAscolti();
+                let tbody = "";
+                recentSongs.forEach(song => {
+                    const nomeArtista = song.track.artists[0].name;
+                    const linkArtista = song.track.artists[0].external_urls.spotify;
+                    const nomeCanzone = song.track.name;
+                    const linkCanzone = song.track.external_urls.spotify;
+                    const immagineAlbum = song.track.album.images[0].url;
+                    const linkAlbum = song.track.album.external_urls.spotify;
+                    const nomeAlbum = song.track.album.name;
+                    const idCanzone = song.track.id;
+                    
+                    tbody += "<tr>";
+                    tbody += `<td><a href='${linkArtista}'>${nomeArtista}</a></td>`;
+                    tbody += `<td>${nomeCanzone}</td>`;
+                    tbody += `<td><img src="${immagineAlbum}" alt="Copertina Album" width="50"></td>`;
+                    tbody += `<td><button onclick="playSong('${idCanzone}')" class="btn btn-secondary btn-sm active" role="button" aria-pressed="true">Play</button></td>`;
+                    tbody += `<td><a href='${linkAlbum}' class="btn btn-secondary btn-sm active" role="button" aria-pressed="true">${nomeAlbum}</a></td>`;
+                    tbody += "</tr>";
+                });
+
+                const tableRow = document.getElementById('songTableRow');
+                tableRow.innerHTML += tbody;
+            } catch (error) {
+                console.error('Errore durante la visualizzazione dei dati:', error);
+            }
+        }
+
+        async function playSong(idCanzone) {
+            const playerDiv = document.getElementById('spotifyPlayer');
+
+            const playerHtml = `
+                <div>
+                    <iframe src="https://open.spotify.com/embed/track/${idCanzone}"
+                            width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media">
+                    </iframe>
+                </div>
+            `;
+            playerDiv.innerHTML = playerHtml;
+        }
+
+        renderTable();
+    </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+</body>
+</html>
