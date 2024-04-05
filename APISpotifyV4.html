@@ -20,10 +20,11 @@
             </tr>
         </table>
 
+    <div id="dettagli"></div>
     <div id="spotifyPlayer"></div>
 
     <script type="text/javascript">
-        var access_token = "BQAYVZ0ADu9YeQ3gheZBKm6VUaE8tcoOhGCjVXAqKHQSSQ3rglUMJ3Ipa7iHYNoAjrfjeQXVC536uPizrYpGzCGcMAhA1NFbrFIYoAdDrJbphZBKWgfp2SwzfQR_YG2gvZ_qDVusxZQTUH6p-sEm8ZB4Xw2mRMxrg4to33AMKvgsyg677wpnprZrlJBElwUrP5dQZdOI2b5H9CgcwnidwQ-4";
+        var access_token = "BQDbfC0Ma8GKmcn2zaoCY08hahxgAT2JupfiEraOIMDQmhFwrfYsl58EqYMzs4PvI75gThMcXFDQSa46HmWd2E_1NZLWnprZb9FonaZVn69Net7aC39vrmwvCE32pZ_W1uK7luFHeUy4IGTsc8QGmXgIIZY6e0m83gefRnQGEHvJsEmA1UnWvFI-RsuRxXvEbDsNkrAwI2m9nifC7CJT1k-n";
        
         async function ultimiAscolti() {
             try {
@@ -47,6 +48,11 @@
 
         async function renderTable() {
             try {
+                const tableRow = document.getElementById('songTableRow');
+                const spotifyPlayer = document.getElementById('spotifyPlayer');
+                spotifyPlayer.innerHTML="";
+                const dettagli = document.getElementById('dettagli');
+                dettagli.innerHTML="";
                 const recentSongs = await ultimiAscolti();
                 let tbody = "";
                 recentSongs.forEach(song => {
@@ -59,36 +65,44 @@
                     const nomeAlbum = song.track.album.name;
                     const idCanzone = song.track.id;
                     const idAlbum = song.track.album.id;
+                    console.log(immagineAlbum)
                     
                     tbody += "<tr>";
                     tbody += `<td><a href='${linkArtista}'>${nomeArtista}</a></td>`;
                     tbody += `<td>${nomeCanzone}</td>`;
                     tbody += `<td><img src="${immagineAlbum}" alt="Copertina Album" width="50"></td>`;
-                    tbody += `<td><button onclick="playSong('${idCanzone}')" class="btn btn-secondary btn-sm active" role="button" aria-pressed="true">Play</button></td>`;
-                    tbody += `<td><button onclick="infoAlbum('${idAlbum}')"class="btn btn-primary btn-sm active" role="button" aria-pressed="true">${nomeAlbum}</td>`;
+                    tbody += `<td><button onclick="playSong('${idCanzone}', '${nomeCanzone}')" class="btn btn-secondary btn-sm active" role="button" aria-pressed="true">Play</button></td>`;
+                    tbody += `<td><button onclick="infoAlbum('${idAlbum}','${immagineAlbum}','${idCanzone}','${nomeCanzone}')" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">${nomeAlbum}</td>`;
                     tbody += "</tr>";
                 });
 
-                const tableRow = document.getElementById('songTableRow');
+                
                 tableRow.innerHTML += tbody;
             } catch (error) {
                 console.error('Errore durante la visualizzazione dei dati:', error);
             }
         }
 
-        async function infoAlbum(idAlbum){
+        async function infoAlbum(idAlbum, immagineAlbum, idCanzone, nomeCanzone){
             const tableRow = document.getElementById('songTableRow');
             tableRow.innerHTML = "";
-            let aa = "";
-            aa += `<button onclick="renderTable()" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">Indietro</button>`;
+            const t = document.getElementById('dettagli');
+            t.innerHTML = `<div><button onclick="renderTable()"class="btn btn-primary btn-sm active" role="button" aria-pressed="true">Indietro</button>`;
+            t.innerHTML += `<h3>Dettagli album</h3>`;
+            t.innerHTML += `<img src="${immagineAlbum}" alt="Copertina Album" width="200">`;
+            t.innerHTML += `<br>`;
+            t.innerHTML += `<h4> ${nomeCanzone} </h4></div>`;
+            playSong(idCanzone,nomeCanzone);
+
+            
 
         }
 
-        async function playSong(idCanzone) {
+        async function playSong(idCanzone, nomeCanzone) {
             const playerDiv = document.getElementById('spotifyPlayer');
-
             const playerHtml = `
                 <div>
+                    <p> Stai ascoltando: ${nomeCanzone}</p>
                     <iframe src="https://open.spotify.com/embed/track/${idCanzone}"
                             width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media">
                     </iframe>
