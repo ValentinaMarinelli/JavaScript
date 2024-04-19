@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Django Products</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+</head>
+<body>
+    <h1>API Django Products</h1>
+    <h3>Dettagli prodotti:</h3>
+    
+    <table class="table" border="1" id="tabella1">
+        <tr>
+            <th>Codice</th>
+            <th>Prodotto</th>
+            <th>Dettagli</th>
+        </tr>
+    </table>
+
+    <table class="table" border="1" id="tabella2" hidden>
+        <tr>
+            <th>Codice</th>
+            <th>Prodotto</th>
+            <th>Descrizione</th>
+            <th>Immagine</th>
+            <th>Costo</th>
+            <th>Spedizione</th>
+        </tr>
+    </table>
+
+    <script type="text/javascript">
+       
+        async function prodotti() {
+            try {
+                const response = await fetch('https://marinellivalentina.eu.pythonanywhere.com/products/products/');
+
+                if (!response.ok) {
+                    throw new Error(`Errore nella richiesta: ${response.status}`);
+                }
+
+                const jsonData = await response.json();
+                return jsonData;
+            } catch (error) {
+                console.error('Errore durante la richiesta:', error);
+                return [];
+            }
+        }
+
+        async function prodotti1() {
+            
+            try {
+                const t1 = document.getElementById("tabella1");
+                let prod = await prodotti();
+                prod = prod.products;
+                let tbody = "";
+            prod.forEach((element) => {
+
+                    console.log(element)
+                    const codiceProdotto = element.id;
+                    const prodotto = element.name;
+                    const descrizione = element.description;
+                    const immagine = element.photo;
+                    const costo = element.price;
+                    const spedizione = element.shipping_cost;
+
+                    tbody += "<tr>";
+                    tbody += `<td>${codiceProdotto}</td>`;
+                    tbody += `<td>${prodotto}</td>`;
+                    tbody += `<td><button onclick="prodotti2('${codiceProdotto}','${prodotto}','${descrizione}','${immagine}','${costo}','${spedizione}')" class="btn btn-secondary btn-sm active" role="button" aria-pressed="true">Apri</button></td>`;
+                    tbody += "</tr>";
+                });
+                t1.innerHTML += tbody;
+            } catch(error) {
+                console.error('Errore durante la visualizzazione dei dati:', error);
+            }
+        }
+        
+
+        async function prodotti2(codiceProdotto, prodotto, descrizione, immagine, costo, spedizione){
+            const tableRow = document.getElementById('tabella1');
+            tableRow.innerHTML = "";
+            const t2 = document.getElementById('tabella2');
+            t2.hidden = false;
+            let tbody2 = "";
+            tbody2 = "<tr>";
+            tbody2 += `<td>${codiceProdotto}</td>`;
+            tbody2 += `<td>${prodotto}</td>`;
+            tbody2 += `<td>${descrizione}</td>`;
+            tbody2 += `<td><img src="${immagine}" alt="immagine_prodotto" width="50"></td>`;
+            tbody2 += `<td>${costo}</td>`;
+            tbody2 += `<td>${spedizione}</td>`;
+            tbody2 += "</tr>";
+            t2.innerHTML += tbody2;
+        }
+
+        prodotti1();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+</body>
+</html>
